@@ -11,8 +11,8 @@ def add_prop(group):
 # and can be imported and run in other scripts as well (like main.py)
 def main():
     # Raw data CSV files are imported into pandas dataframes (one for male and one for female)
-    df_first_names_male_by_canton = pd.read_csv(r"C:\Users\A933904\Downloads\vornamen\Rohdaten\vornamen_schweiz_seit-2000_rohdaten_nach_kanton_m.csv", sep=";", encoding='utf-8')
-    df_first_names_female_by_canton = pd.read_csv(r"C:\Users\A933904\Downloads\vornamen\Rohdaten\vornamen_schweiz_seit-2000_rohdaten_nach_kanton_w.csv", sep=";", encoding='utf-8')
+    df_first_names_male_by_canton = pd.read_csv(r"/Users/kaimitiyamulle/personal_projects/first_names_git_repo/first_names/raw_data/vornamen_schweiz_seit-2000_rohdaten_nach_kanton_m.csv", sep=";", encoding='utf-8')
+    df_first_names_female_by_canton = pd.read_csv(r"/Users/kaimitiyamulle/personal_projects/first_names_git_repo/first_names/raw_data/vornamen_schweiz_seit-2000_rohdaten_nach_kanton_w.csv", sep=";", encoding='utf-8')
     
     # Column for sex is added
     df_first_names_male_by_canton["sex"] = "m"
@@ -37,8 +37,6 @@ def main():
     
     # The rows are sorted according to sex, then name and lastly year. This is a pre-requisite for the loop that iterates through the df in the next step
     df_first_names_ch = df_first_names_ch.sort_values(by=['sex', 'name', 'year'])
-    print(df_first_names_ch.head())
-    print(df_first_names_ch.tail())
     
     # The df is being iterated over. Each row is compared with its predecesor. If both records have the same sex, samne name and are one year apart, the
     # ranks are subtracted from each other and the result is assigned to the "rank_change_yoy" column. If the conditions are not fulfilled, calculating
@@ -53,7 +51,7 @@ def main():
     
     # Content of df is written into a CSV file. Encoding 'utf-8-sig' is used to accurately read Umlaute (like 'ö', 'ä', 'ü', 'é', etc.). For example, 'Ömer'
     # would be written into the CSV file as 'Ã–mer' if encoding 'utf-8' was used
-    df_first_names_ch.to_csv(r"C:\Users\A933904\Downloads\vornamen\raw_data_enhanced.csv", index=False, sep=';', encoding='utf-8-sig')
+    df_first_names_ch.to_csv(r"/Users/kaimitiyamulle/personal_projects/first_names_git_repo/first_names/raw_date/raw_data_enhanced.csv", index=False, sep=';', encoding='utf-8-sig')
 
 if __name__ == "__main__":
 

@@ -24,7 +24,7 @@ def calculate_longest_streak(group):
 # and can be imported and run in other scripts as well (like main.py)
 def main():
     # Raw data CSV file is imported into pandas dataframes
-    df_first_names_ch = pd.read_csv(r"C:\Users\A933904\Downloads\vornamen\raw_data_enhanced.csv", sep=";", encoding='utf-8')
+    df_first_names_ch = pd.read_csv(r"/Users/kaimitiyamulle/personal_projects/first_names_git_repo/first_names/raw_date/raw_data_enhanced.csv", sep=";", encoding='utf-8')
     
     # Define thresholds to identify 'popular' names
     top_n = 10 # Top 10 names

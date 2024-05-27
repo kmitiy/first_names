@@ -24,7 +24,7 @@ def calculate_decline_rate(group, decline_period, decline_threshold):
 # and can be imported and run in other scripts as well (like main.py)
 def main():
     # Raw data CSV file is imported into pandas dataframes
-    df_first_names_ch = pd.read_csv(r"C:\Users\A933904\Downloads\vornamen\raw_data_enhanced.csv", sep=";", encoding='utf-8')
+    df_first_names_ch = pd.read_csv(r"/Users/kaimitiyamulle/personal_projects/first_names_git_repo/first_names/raw_date/raw_data_enhanced.csv", sep=";", encoding='utf-8')
         
     # Threshold is defined (e.g., drop out of top 50 within 3 years)
     decline_period = 3
@@ -48,7 +48,7 @@ def main():
     
     # Content of df is written into a CSV file. Encoding 'utf-8-sig' is used to accurately read Umlaute (like 'ö', 'ä', 'ü', 'é', etc.). For example, 'Ömer'
     # would be written into the CSV file as 'Ã–mer' if encoding 'utf-8' was used
-    df_first_names_ch.to_csv(r"C:\Users\A933904\Downloads\vornamen\outliers.csv", index=False, sep=';', encoding='utf-8-sig')
+    df_first_names_ch.to_csv(r"/Users/kaimitiyamulle/personal_projects/first_names_git_repo/first_names/outliers.csv", index=False, sep=';', encoding='utf-8-sig')
     
     # grouped = top_names.groupby(['name', 'sex'])
     # longevity = grouped['year'].nunique().reset_index()
