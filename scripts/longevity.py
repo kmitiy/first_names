@@ -20,11 +20,88 @@ def calculate_longest_streak(group):
             current_streak = 1
     return longest_streak
 
+
+# Function to filter the whole dataset for one name (and one sex)
+def filter_for_one_name(df_all_names, name, sex):
+    return df_all_names[(df_all_names['name'] == name) & (df_all_names['sex'] == sex)]
+
+
+def get_df_rank_table(df_one_name):
+    return df_one_name[['year', 'rank', 'rank_change_yoy']].sort_values(by='year', ascending=False)
+
+
+def visualize_name_freq_over_time(fig, df_one_name):
+    
+    fig.add_trace(go.Scatter(mode='lines+markers', name='absolute', x=df_one_name['year'], y=df_one_name['births'], marker=dict(size=8, symbol='diamond',
+                              line=dict(width=2, color='DarkSlateGrey'))
+                             ),
+                  row=1,col=1)
+    
+    fig.add_trace(go.Scatter(mode='lines+markers', name='relative', x=df_one_name['year'], y=df_one_name['prop'], marker=dict(size=8, symbol='diamond',
+                              line=dict(width=2, color='DarkSlateGrey'))
+                             ),
+                  row=2,col=1)
+    
+    fig.update_layout(title=dict(text="Births Over Time", font=dict(size=36), x=0.5, xanchor='center'),
+                      yaxis=dict(title='Number of Births'),
+                      yaxis2=dict(title='Share of Births', tickformat=',.4%'),
+                      showlegend=False,
+                      hovermode="x unified")
+    
+    return fig
+
+
+def get_font_colors_for_numbers(df, col_name):
+    
+    font_colors = []
+    for val in df[col_name].to_list()[::-1]:
+        if val == 0:
+            font_colors.append('black')
+        elif val < 0:
+            font_colors.append('#ff2d5d')
+        else:
+            font_colors.append('#04b29b')
+    
+    return font_colors
+
+
+def visualize_name_rank_over_time(fig, df_one_name_rank_table, font_colors_numbers):
+    
+    fig.add_trace(go.Table(header=dict(values=['Year', 'Rank', 'Year-Over-Year Change'], align='center', height=45.5),
+                           cells=dict(values=[df_one_name_rank_table['year'], df_one_name_rank_table['rank'], df_one_name_rank_table['rank_change_yoy']],
+                                      align='center', 
+                                      font=dict(color=['black', 'black', font_colors_numbers]),
+                                      height=45.5)),
+                  row=[1,2], col=2)
+    
+    return fig
+
+
+def main_single_name():
+    
+    df_all_names = pd.read_csv(r"/Users/kaimitiyamulle/personal_projects/first_names_git_repo/first_names/raw_data/raw_data_enhanced.csv", sep=";", encoding='utf-8')
+    
+    df_one_name = filter_for_one_name(df_all_names, 'Thiago', 'm')
+    df_one_name_rank_table = get_df_rank_table(df_all_names)
+    
+    fig = make_subplots(rows=2, cols=2, specs=[[{}, {'type':'table', 'rowspan':2}], [{}, None]], shared_xaxes=False)
+    
+    fig = visualize_name_freq_over_time(fig, df_one_name)
+    
+    font_colors_numbers = get_font_colors_for_numbers(df_one_name_rank_table, 'rank_change_yoy')
+    
+    fig = visualize_name_rank_over_time(fig, df_one_name, font_colors_numbers)
+    
+    fig.show()
+    
+    return None
+    
+
 # Code to execute is put in main function. That way, it can run directly in this script (by putting the function into the if-statement at the bottom)
 # and can be imported and run in other scripts as well (like main.py)
 def main():
     # Raw data CSV file is imported into pandas dataframes
-    df_first_names_ch = pd.read_csv(r"/Users/kaimitiyamulle/personal_projects/first_names_git_repo/first_names/raw_date/raw_data_enhanced.csv", sep=";", encoding='utf-8')
+    df_first_names_ch = pd.read_csv(r"/Users/kaimitiyamulle/personal_projects/first_names_git_repo/first_names/raw_data/raw_data_enhanced.csv", sep=";", encoding='utf-8')
     
     # Define thresholds to identify 'popular' names
     top_n = 10 # Top 10 names
@@ -48,60 +125,9 @@ def main():
     
     consistent_names = longevity[longevity['consistent_presence']].reset_index()
     
-    
-# =============================== Here, parameters are added. Ideally, this is integrated into the UI ==============================================
-     
-    plotly_filter = df_first_names_ch[(df_first_names_ch['name'] == 'Thiago') & (df_first_names_ch['sex'] == 'm')]
-    # print(plotly_filter.head())
-     
-# =============================== Here, parameters are added. Ideally, this is integrated into the UI ==============================================
-    
-    
-    plotly_rank_table = plotly_filter[['year', 'rank', 'rank_change_yoy']].sort_values(by='year', ascending=False)
-
-    fig = make_subplots(rows=2, cols=2, specs=[[{}, {'type':'table', 'rowspan':2}], [{}, None]], shared_xaxes=False)
-    
-    
-    fig.add_trace(go.Scatter(mode='lines+markers', name='absolute', x=plotly_filter['year'], y=plotly_filter['births'], marker=dict(size=8, symbol='diamond',
-                              line=dict(width=2, color='DarkSlateGrey'))
-                             ),
-                  row=1,col=1)
-    
-    fig.add_trace(go.Scatter(mode='lines+markers', name='relative', x=plotly_filter['year'], y=plotly_filter['prop'], marker=dict(size=8, symbol='diamond',
-                              line=dict(width=2, color='DarkSlateGrey'))
-                             ),
-                  row=2,col=1)
-    
-    # tbl_val_font_colors = [('black' if val = 0 else '#ff2d5d' if val > 0 else '#04b29b') for val in plotly_filter['rank_change_yoy'].to_list()]
-    
-    # figure out correct order!!!
-    tbl_val_font_colors = []
-    for val in plotly_filter['rank_change_yoy'].to_list()[::-1]:
-        if val == 0:
-            tbl_val_font_colors.append('black')
-        elif val < 0:
-            tbl_val_font_colors.append('#ff2d5d')
-        else:
-            tbl_val_font_colors.append('#04b29b')
-            
-    fig.add_trace(go.Table(header=dict(values=['Year', 'Rank', 'Year-Over-Year Change'], align='center', height=45.5),
-                           cells=dict(values=[plotly_rank_table['year'], plotly_rank_table['rank'], plotly_rank_table['rank_change_yoy']],
-                                      align='center', 
-                                      font=dict(color=['black', 'black', tbl_val_font_colors]),
-                                      height=45.5)),
-                  row=[1,2], col=2)
-
-    
-    fig.update_layout(title=dict(text="Births Over Time", font=dict(size=36), x=0.5, xanchor='center'),
-                      yaxis=dict(title='Number of Births'),
-                      yaxis2=dict(title='Share of Births', tickformat=',.4%'),
-                      showlegend=False,
-                      hovermode="x unified")
-    
-    # why does this not work like here? https://plotly.com/python/marker-style/#custom-marker-symbols
-    # fig.update_traces(marker=dict(size=20, symbol="diamond", line=dict(width=2, color="DarkSlateGrey")), selector=dict(mode="markers"))
-    
-    fig.show()
+    main_single_name()
     
 if __name__ == "__main__":
     main()
+    
+    
