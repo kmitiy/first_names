@@ -55,24 +55,28 @@ def get_font_colors_for_numbers(df, col_name):
     
     font_colors = []
     for val in df[col_name].to_list()[::-1]:
-        if val == 0:
+        if val == 0 or np.isnan(val):
             font_colors.append('black')
         elif val < 0:
-            font_colors.append('#ff2d5d')
+            font_colors.append('red')
         else:
-            font_colors.append('#04b29b')
-    
-    return font_colors
+            font_colors.append('green')
+    return font_colors[::-1]
 
 
 def visualize_name_rank_over_time(fig, df_one_name_rank_table, font_colors_numbers):
-    
-    fig.add_trace(go.Table(header=dict(values=['Year', 'Rank', 'Year-Over-Year Change'], align='center', height=45.5),
-                           cells=dict(values=[df_one_name_rank_table['year'], df_one_name_rank_table['rank'], df_one_name_rank_table['rank_change_yoy']],
+    fig.add_trace(go.Table(header=dict(values=['Year', 'Rank', 'Year-Over-Year Change'], align='center', height=25),
+                            cells=dict(values=[df_one_name_rank_table['year'], df_one_name_rank_table['rank'], df_one_name_rank_table['rank_change_yoy']],
                                       align='center', 
-                                      font=dict(color=['black', 'black', font_colors_numbers]),
-                                      height=45.5)),
+                                      height=25)),
                   row=[1,2], col=2)
+    
+    # fig.add_trace(go.Table(header=dict(values=['Year', 'Rank', 'Year-Over-Year Change', 'colors'], align='center', height=25),
+    #                         cells=dict(values=[df_one_name_rank_table['year'], df_one_name_rank_table['rank'], df_one_name_rank_table['rank_change_yoy'], font_colors_numbers],
+    #                                   align='center', 
+    #                                   font=dict(color=['black', 'black', font_colors_numbers, font_colors_numbers]),
+    #                                   height=25)),
+    #               row=[1,2], col=2)
     
     return fig
 
@@ -82,7 +86,7 @@ def main_single_name():
     df_all_names = pd.read_csv(r"/Users/kaimitiyamulle/personal_projects/first_names_git_repo/first_names/raw_data/raw_data_enhanced.csv", sep=";", encoding='utf-8')
     
     df_one_name = filter_for_one_name(df_all_names, 'Thiago', 'm')
-    df_one_name_rank_table = get_df_rank_table(df_all_names)
+    df_one_name_rank_table = get_df_rank_table(df_one_name)
     
     fig = make_subplots(rows=2, cols=2, specs=[[{}, {'type':'table', 'rowspan':2}], [{}, None]], shared_xaxes=False)
     
@@ -90,7 +94,7 @@ def main_single_name():
     
     font_colors_numbers = get_font_colors_for_numbers(df_one_name_rank_table, 'rank_change_yoy')
     
-    fig = visualize_name_rank_over_time(fig, df_one_name, font_colors_numbers)
+    fig = visualize_name_rank_over_time(fig, df_one_name_rank_table, font_colors_numbers)
     
     fig.show()
     
