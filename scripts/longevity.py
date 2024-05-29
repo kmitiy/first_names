@@ -6,6 +6,7 @@ import plotly.io as pio
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 pio.renderers.default='browser'
+from dash import Dash, html, Input, Output, callback
 
 
 # Function to calculate longest streak in top N. Needs to be a function so it can be applied to each row in the dataframe
@@ -71,12 +72,18 @@ def visualize_name_rank_over_time(fig, df_one_name_rank_table, font_colors_numbe
                                       height=25)),
                   row=[1,2], col=2)
     
-    # fig.add_trace(go.Table(header=dict(values=['Year', 'Rank', 'Year-Over-Year Change', 'colors'], align='center', height=25),
-    #                         cells=dict(values=[df_one_name_rank_table['year'], df_one_name_rank_table['rank'], df_one_name_rank_table['rank_change_yoy'], font_colors_numbers],
-    #                                   align='center', 
-    #                                   font=dict(color=['black', 'black', font_colors_numbers, font_colors_numbers]),
-    #                                   height=25)),
-    #               row=[1,2], col=2)
+# =======================================================================================
+# ====== Tried to implement conditional font formatting for yoy rank change column ======
+# =======================================================================================
+#     fig.add_trace(go.Table(header=dict(values=['Year', 'Rank', 'Year-Over-Year Change', 'colors'], align='center', height=25),
+#                             cells=dict(values=[df_one_name_rank_table['year'], df_one_name_rank_table['rank'], df_one_name_rank_table['rank_change_yoy'], font_colors_numbers],
+#                                       align='center', 
+#                                       font=dict(color=['black', 'black', font_colors_numbers, font_colors_numbers]),
+#                                       height=25)),
+#                   row=[1,2], col=2)
+# =======================================================================================
+# ====== Tried to implement conditional font formatting for yoy rank change column ======
+# =======================================================================================
     
     return fig
 
@@ -99,7 +106,18 @@ def main_single_name():
     fig.show()
     
     return None
+
+def run_dash_app():
     
+    # Instantiate dash app
+    app = Dash(__name__)
+        
+    app.layout = html.H1('Hello kakaka')
+    
+    app.run_server(debug=True, host='0.0.0.0', port='9999')
+    
+    return None
+        
 
 # Code to execute is put in main function. That way, it can run directly in this script (by putting the function into the if-statement at the bottom)
 # and can be imported and run in other scripts as well (like main.py)
@@ -132,6 +150,7 @@ def main():
     main_single_name()
     
 if __name__ == "__main__":
-    main()
+    # main()
+    run_dash_app()
     
     
