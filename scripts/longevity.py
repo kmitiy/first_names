@@ -6,7 +6,7 @@ import plotly.io as pio
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 pio.renderers.default='browser'
-from dash import Dash, html, Input, Output, callback
+from dash import Dash, html, dcc, Input, Output, callback
 
 
 # Function to calculate longest streak in top N. Needs to be a function so it can be applied to each row in the dataframe
@@ -103,17 +103,18 @@ def main_single_name():
     
     fig = visualize_name_rank_over_time(fig, df_one_name_rank_table, font_colors_numbers)
     
-    fig.show()
+    # fig.show()
     
-    return None
+    return fig
 
 def run_dash_app():
     
     # Instantiate dash app
     app = Dash(__name__)
         
-    app.layout = html.H1('Hello kakaka')
+    app.layout = dcc.Graph(figure=main_single_name())
     
+    # Open "http://127.0.0.1:9999/" on Chrome
     app.run_server(debug=True, host='0.0.0.0', port='9999')
     
     return None
